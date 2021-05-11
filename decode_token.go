@@ -8,7 +8,7 @@ import (
 	"github.com/dimasadiandrea/go-say-hello/model"
 )
 
-var SECRET_KEY = []byte("asdf")
+var SECRET_KEY = []byte("64f6ylZf78hgW2")
 
 func ValidateToken(encodedToken string) (*jwt.Token, error) {
 	token, err := jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
