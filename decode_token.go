@@ -3,12 +3,11 @@ package gosayhello
 import (
 	"encoding/json"
 	"errors"
+	"os"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dimasadiandrea/go-say-hello/model"
 )
-
-var SECRET_KEY = []byte("64f6ylZf78hgW2")
 
 func ValidateToken(encodedToken string) (*jwt.Token, error) {
 	token, err := jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
@@ -16,7 +15,7 @@ func ValidateToken(encodedToken string) (*jwt.Token, error) {
 		if !ok {
 			return nil, errors.New("invalid token")
 		}
-		return []byte(SECRET_KEY), nil
+		return []byte(os.Getenv("JWT_SECRET_KEY")), nil
 	})
 
 	if err != nil {
@@ -29,7 +28,7 @@ func DecodeToken(encodedToken string) (decodedResult model.DecodedStructure, err
 	tokenString := encodedToken
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(SECRET_KEY), nil
+		return []byte(os.Getenv("JWT_SECRET_KEY")), nil
 	})
 	if err != nil {
 		return decodedResult, err
@@ -37,11 +36,6 @@ func DecodeToken(encodedToken string) (decodedResult model.DecodedStructure, err
 	if !token.Valid {
 		return decodedResult, errors.New("invalid token")
 	}
-
-	// // do something with decoded claims
-	// for key, val := range claims {
-	// 	fmt.Printf("Key: %v, value: %v\n", key, val)
-	// }
 
 	jsonbody, err := json.Marshal(claims)
 	if err != nil {
